@@ -1,4 +1,4 @@
-//Type 별칭을 활용하여 중복을 없애는 방법.
+// Type 별칭을 활용하여 중복을 없애는 방법.
 // type Todo = {
 //   id: number;
 //   title: string;
