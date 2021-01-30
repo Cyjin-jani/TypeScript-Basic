@@ -1,23 +1,30 @@
-// utils
-function $(selector: any) {
+// utils 유틸함수
+function $(selector: string) {
   return document.querySelector(selector);
 }
-function getUnixTimestamp(date: any) {
+//기본적으로 제공해주는 객체 Date같은 경우는 타입스크립트에서 자동적으로 타입 추론이 가능함.
+//date에는 그래서 string, number, Date 모두 가능. (유니온)
+//본래라면 가능한 타입들을 명시해 주는 것이 좋으나, 일단 여기서는 Date만으로 설정.
+function getUnixTimestamp(date: Date) {
   return new Date(date).getTime();
 }
 
 // DOM
-const confirmedTotal = $('.confirmed-total');
-const deathsTotal = $('.deaths');
-const recoveredTotal = $('.recovered');
-const lastUpdatedTime = $('.last-updated-time');
+//Dom의 타입 구조체 (큰 순서.)
+// var a : Element | HTMLElement | HTMLParagraphElement
+//위 유틸 함수로 인한 반환값이 기본적으로 Element 타입으로 추론되어 있음.
+//경우에 맞도록 구체화 된 타입을 단언해준다. (html 파일 참고하여 맞는 하위 Element 타입을 적용.)
+const confirmedTotal = $('.confirmed-total') as HTMLSpanElement;
+const deathsTotal = $('.deaths') as HTMLParagraphElement; //타입 단언 활용 (p태그여서 ParagraphElement를 넣음)
+const recoveredTotal = $('.recovered') as HTMLParagraphElement;
+const lastUpdatedTime = $('.last-updated-time') as HTMLParagraphElement;
 const rankList = $('.rank-list');
 const deathsList = $('.deaths-list');
 const recoveredList = $('.recovered-list');
 const deathSpinner = createSpinnerElement('deaths-spinner');
 const recoveredSpinner = createSpinnerElement('recovered-spinner');
 
-function createSpinnerElement(id: any) {
+function createSpinnerElement(id: string) {
   const wrapperDiv = document.createElement('div');
   wrapperDiv.setAttribute('id', id);
   wrapperDiv.setAttribute(
@@ -42,8 +49,15 @@ function fetchCovidSummary() {
   return axios.get(url);
 }
 
-function fetchCountryInfo(countryCode: any, status: any) {
-  // params: confirmed, recovered, deaths
+//api 문서에 이미 아래 값들이 반환된다고 되어있으므로 enum으로 만들어 둠.
+enum CovidStatus {
+  Confirmed = 'confirmed',
+  Recovered = 'recovered',
+  Deaths = 'deaths'
+}
+
+function fetchCountryInfo(countryCode: string, status: CovidStatus) {
+  // status params: confirmed, recovered, deaths
   const url = `https://api.covid19api.com/country/${countryCode}/status/${status}`;
   return axios.get(url);
 }
@@ -77,14 +91,14 @@ async function handleListClick(event: any) {
   clearRecoveredList();
   startLoadingAnimation();
   isDeathLoading = true;
-  const { data: deathResponse } = await fetchCountryInfo(selectedId, 'deaths');
+  const { data: deathResponse } = await fetchCountryInfo(selectedId, CovidStatus.Deaths);
   const { data: recoveredResponse } = await fetchCountryInfo(
     selectedId,
-    'recovered',
+    CovidStatus.Recovered,
   );
   const { data: confirmedResponse } = await fetchCountryInfo(
     selectedId,
-    'confirmed',
+    CovidStatus.Confirmed,
   );
   endLoadingAnimation();
   setDeathsList(deathResponse);
