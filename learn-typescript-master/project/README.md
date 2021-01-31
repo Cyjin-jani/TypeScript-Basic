@@ -15,6 +15,8 @@
 2. 명시적인 `any` 선언하기
    - `tsconfig.json` 파일에 `noImplicitAny` 값을 `true`로 추가
 
+3. strict 모드 설정하기.
+
 
 ## 참고 자료
 
