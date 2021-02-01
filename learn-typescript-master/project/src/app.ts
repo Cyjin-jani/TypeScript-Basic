@@ -1,3 +1,12 @@
+// //라이브러리 로딩
+// import 변수명 ㄹrom '라이브러리 이름';
+// //변수, 함수 임포트 문법
+// import {} from '파일 상대 경로';
+import axios from 'axios';
+import * as Chart from 'chart.js'; //특정 라이브러리에 해당하는 부분. (* as를 써야함.)
+//이러한 문제는 CommonJs모듈을 ES6모듈의 코드베이스에 사용하는 경우 발생.
+//exports =  와 같은 걸 사용하지 않는 한, * as 를 써야 한다.
+
 // utils 유틸함수
 function $(selector: string) {
   return document.querySelector(selector);
