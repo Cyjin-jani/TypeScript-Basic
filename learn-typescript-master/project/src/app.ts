@@ -3,9 +3,10 @@
 // //변수, 함수 임포트 문법
 // import {} from '파일 상대 경로';
 import axios, { AxiosResponse } from 'axios';
-import * as Chart from 'chart.js'; //특정 라이브러리에 해당하는 부분. (* as를 써야함.)
+import Chart from 'chart.js'; //특정 라이브러리에 해당하는 부분. (* as를 써야함.)
 //이러한 문제는 CommonJs모듈을 ES6모듈의 코드베이스에 사용하는 경우 발생.
 //exports =  와 같은 걸 사용하지 않는 한, * as 를 써야 한다.
+//만약, 따로 정의한 index.d.ts를 쓴다면 그냥 import Chart from 'chart.js'로 해줘야 함.
 
 //타입 모듈 불러오기
 import {
@@ -58,7 +59,6 @@ function createSpinnerElement(id: string) {
 
 // state
 let isDeathLoading = false;
-const isRecoveredLoading = false;
 
 // api
 function fetchCovidSummary(): Promise<AxiosResponse<CovidSummaryResponse>> {
@@ -204,8 +204,9 @@ async function setupData() {
   setLastUpdatedTimestamp(data);
 }
 
-function renderChart(data: any, labels: any) {
-  const ctx = $('#lineChart').getContext('2d');
+function renderChart(data: number[], labels: string[]) {
+  const lineChart = $('#lineChart') as HTMLCanvasElement;
+  const ctx = lineChart.getContext('2d');
   Chart.defaults.global.defaultFontColor = '#f5eaea';
   Chart.defaults.global.defaultFontFamily = 'Exo 2';
   new Chart(ctx, {
@@ -225,11 +226,13 @@ function renderChart(data: any, labels: any) {
   });
 }
 
-function setChartData(data: any) {
-  const chartData = data.slice(-14).map((value: any) => value.Cases);
+function setChartData(data: CountrySummaryResponse) {
+  const chartData = data
+    .slice(-14)
+    .map((value: CountrySummaryInfo) => value.Cases);
   const chartLabel = data
     .slice(-14)
-    .map((value: any) =>
+    .map((value: CountrySummaryInfo) =>
       new Date(value.Date).toLocaleDateString().slice(5, -1)
     );
   renderChart(chartData, chartLabel);
