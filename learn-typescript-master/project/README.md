@@ -32,7 +32,17 @@
    - 해당 폴더를 생성하고, 그 아래에 라이브러리명으로 폴더를 만든 뒤, 그 안에 `index.d.ts`파일을 만들어 타입을 정의한다.
 
 5. `strict` 옵션 추가 후 타입 정의
-
+```
+{
+  "strict": true,
+  "strictNullChecks": true,
+  "strictFunctionTypes": true,
+  "strictBindCallApply": true,
+  "strictPropertyInitialization": true,
+  "noImplicitThis": true,
+  "alwaysStrict": true,
+}
+```
 
 ## 참고 자료
 
